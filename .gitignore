@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # build folder
 build/
 tmp/
@@ -5,11 +6,8 @@ tmp/
 # nodeModules
 node_modules/
 src/vendor/
+build/Release
 
 # Idea
 .idea/
 *.iml
-
-# CODIO
-.codio
-.settings
