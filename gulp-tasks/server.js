@@ -3,7 +3,6 @@ module.exports = function (gulp) {
         refresh = require('gulp-livereload'),
         liveReload = require('connect-livereload'),
         gzipStatic = require('connect-gzip-static'),
-        dpd = require('deployd'),
         liveReloadPort = 35729,
         serverPort = 3000;
 
@@ -12,16 +11,6 @@ module.exports = function (gulp) {
             app = express(),
             server = require('http').createServer(app),
             io = require('socket.io')(server);
-
-        dpd.attach(server, {
-            socketIo: io,
-            env     : 'development',
-            db      : {
-                host: 'localhost',
-                port: 27017,
-                name: 'SpringAtom3'
-            }
-        });
 
         app.use(liveReload({port: liveReloadPort}));
         app.use(gzipStatic(distDir));
