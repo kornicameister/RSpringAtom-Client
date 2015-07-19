@@ -7,8 +7,7 @@ module.exports = function (config) {
             {pattern: 'test/node_modules/ng-midway-tester/src/ngMidwayTester.js', included: false},
             {pattern: 'test/libs/angular-mocks/angular-mocks.js', included: false},
             {pattern: 'test/libs/angular-scenario/angular-scenario.js', included: false},
-            {pattern: 'test/src/midway/**/*Test.js', included: false},
-            'test/test-main.js'
+            {pattern: 'test/src/midway/**/*Test.js', included: false}
         ],
         exclude  : [
             'test/node_modules/ng-midway-tester/test/**'

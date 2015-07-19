@@ -11,7 +11,8 @@
         options = minimist(process.argv.slice(2), knownOptions);
 
     // tasks
-    gulp.task('default', ['clean', 'vendor', 'scripts', 'styles', 'views', 'index']);
+    gulp.task('default', ['test']);
+    gulp.task('build', ['clean', 'vendor', 'scripts', 'styles', 'views', 'index']);
     gulp.task('clean', getTask('clean'));
     gulp.task('scripts', getTask('scripts'));
     gulp.task('views', getTask('views'));
@@ -26,6 +27,8 @@
         getTask('vendor/styles')();
     });
     gulp.task('server', getTask('server'));
+    gulp.task('test', ['test:unit']);
+    gulp.task('test:unit', getTask('test/unit'));
     // tasks
 
     function getTask(task) {

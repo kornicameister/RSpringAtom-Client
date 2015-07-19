@@ -1,12 +1,10 @@
-<<<<<<< HEAD
 # build folder
 build/
 tmp/
 
 # nodeModules
 node_modules/
-src/vendor/
-build/Release
+bower_components/
 
 # Idea
 .idea/

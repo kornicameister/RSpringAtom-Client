@@ -1,6 +1,5 @@
 module.exports = function (gulp, plugins, options) {
-    var mainBowerFiles = require('main-bower-files'),
-        path = require('path');
+    var mainBowerFiles = require('main-bower-files');
 
     return function () {
         var paths = require('../../conf/paths'),

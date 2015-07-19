@@ -17,24 +17,21 @@ module.exports = function (conf) {
          {@type Array} of files that will be included in every test suit
          */
         globalFilesToInclude = [
-            'sa/vendor/angular/angular.js',
-            {pattern: 'sa/app/**/*.html', included: true},
-            {pattern: 'sa/common/**/*.html', included: true},
-            {pattern: 'sa/app/**/*.less', included: false},
-            {pattern: 'sa/common/**/*.less', included: false},
-            {pattern: 'sa/**/*.js', included: false}
+            'node_modules/chai/chai.js',
+            'node_modules/sinon-chai/lib/sinon-chai.js',
+            'node_modules/sinon/pkg/sinon.js',
+            {pattern: 'bower_components/angular/angular.js', included: true},
+            {pattern: 'src/app/**/*.html', included: true},
+            {pattern: 'src/common/**/*.html', included: true},
+            {pattern: 'src/**/*.js', included: true}
         ],
         /**
          {@type Array} of files that will be excluded in every test suit
          */
         globalToExclude = [
-            'sa/main.js',       // dont run application
-            'sa/vendor/**/*[tT]est.js', // dont run test in the libs
-            'sa/vendor/**/*[sS]pec.js',
-            'sa/vendor/src/*.js',
-            'sa/vendor/jquery/[test|src|build|speed]/**'
+            'src/springatom.js'         // dont run application
         ],
-        defaultBrowsers = ['ChromeCanary', 'IE'];
+        defaultBrowsers = ['ChromeCanary'];
 
     return {
         basePath             : '../',
@@ -47,25 +44,23 @@ module.exports = function (conf) {
         ],
         reporters            : ['progress', 'coverage', 'junit'],
         preprocessors        : {
-            'sa/app/*.js'        : ['coverage'],
-            'sa/common/*.js'     : ['coverage'],
-            'sa/app/**/*.html'   : ['ng-html2js'],
-            'sa/common/**/*.html': ['ng-html2js']
+            'src/app/*.js'        : ['coverage'],
+            'src/common/*.js'     : ['coverage'],
+            'src/app/**/*.html'   : ['ng-html2js'],
+            'src/common/**/*.html': ['ng-html2js']
         },
         coverageReporter     : {
             type: 'html',
             dir : 'test/results/coverage'
         },
         junitReporter        : {
-            outputFile: 'test/results/test-results.xml',
-            suite     : ''
+            outputDir: 'test/results/'
         },
         ngHtml2JsPreprocessor: {
             moduleName     : 'templates',
             prependPrefix  : '',
             cacheIdFromPath: function (filepath) {
-                filepath = filepath.replace('sa/', '');
-                console.log('Loading >>> ' + filepath);
+                filepath = filepath.replace('src/', '');
                 return filepath;
             }
         },

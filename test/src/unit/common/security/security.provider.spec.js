@@ -1,58 +1,50 @@
-define(
-    [
-        'angularMocks',
-        'common/security/security.module'
-    ],
-    function () {
-        describe('$securityProvider', function () {
+describe('$securityProvider', function () {
 
-            beforeEach(angular.mock.module('sg.common.security'));
+    beforeEach(angular.mock.module('sg.common.security'));
 
-            describe('default values', function () {
-                var security;
+    describe('default values', function () {
+        var security;
 
-                beforeEach(function () {
-                    angular.mock.inject(function ($security) {
-                        security = $security;
-                    });
-                });
-
-                it('enableStateSecurity should return false by default', function () {
-                    expect(security.isStateSecurityEnabled()).toEqual(false);
-                });
-
-                it('enableAuthenticateOnRun should return false by default', function () {
-                    expect(security.isOnRunAuthenticationEnabled()).toEqual(false);
-                });
+        beforeEach(function () {
+            angular.mock.inject(function ($security) {
+                security = $security;
             });
+        });
 
-            describe('non-default values', function () {
-                var securityProvider,
-                    security;
+        it('enableStateSecurity should return false by default', function () {
+            expect(security.isStateSecurityEnabled()).toEqual(false);
+        });
 
-                beforeEach(function () {
-                    angular.mock.module(function ($securityProvider) {
-                        securityProvider = $securityProvider;
+        it('enableAuthenticateOnRun should return false by default', function () {
+            expect(security.isOnRunAuthenticationEnabled()).toEqual(false);
+        });
+    });
 
-                        securityProvider.enableStateSecurity();
-                        securityProvider.enableAuthenticateOnRun();
+    describe('non-default values', function () {
+        var securityProvider,
+            security;
 
-                    });
-                    angular.mock.inject(function ($security) {
-                        security = $security;
-                    });
-                });
+        beforeEach(function () {
+            angular.mock.module(function ($securityProvider) {
+                securityProvider = $securityProvider;
 
-                it('enableStateSecurity should return true', function () {
-                    expect(security.isStateSecurityEnabled()).toEqual(true);
-                });
+                securityProvider.enableStateSecurity();
+                securityProvider.enableAuthenticateOnRun();
 
-                it('enableAuthenticateOnRun should return true', function () {
-                    expect(security.isOnRunAuthenticationEnabled()).toEqual(true);
-                });
+            });
+            angular.mock.inject(function ($security) {
+                security = $security;
+            });
+        });
 
-            })
+        it('enableStateSecurity should return true', function () {
+            expect(security.isStateSecurityEnabled()).toEqual(true);
+        });
 
-        })
-    }
-);
+        it('enableAuthenticateOnRun should return true', function () {
+            expect(security.isOnRunAuthenticationEnabled()).toEqual(true);
+        });
+
+    })
+
+});
