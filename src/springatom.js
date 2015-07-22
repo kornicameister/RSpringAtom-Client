@@ -1,7 +1,9 @@
-angular
+var angular = require('angular');
+
+module.exports = angular
     .module('springatom', [
-        'sg.app',
-        'sg.common'
+        require('./app'),        // 'sg.app',
+        require('./common')      // 'sg.common'
     ])
     .constant('ApplicationName', 'SpringAtom')
     .constant('Build', '0.0.1')

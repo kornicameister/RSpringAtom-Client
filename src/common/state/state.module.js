@@ -1,13 +1,16 @@
-angular.module('sg.common.state', [
-    'sg.common.utils',
-    'sg.common.log',
-    'ui.router.compat',
-    'ct.ui.router.extras'
-]);
-(function () {
-    angular.module('sg.common.state')
-        .run(['$state', 'DEBUG_MODE', '$log', '$timeout', listStatesIfDebug])
-        .run(['$stateHelper', '$rootScope', 'loggerFactory', sgStateRun]);
+var angular = require('angular'),
+    app = angular.module('sg.common.state', [
+      'sg.common.utils',
+      'sg.common.log',
+      'ui.router.compat',
+      'ct.ui.router.extras'
+    ]);
+
+    app
+      .provider('$stateHelper', require('./stateHelper.provider'))
+      .factory('$stateLabelResolve', require('./stateLabelResolve.factory'))
+      .run(['$state', 'DEBUG_MODE', '$log', '$timeout', listStatesIfDebug])
+      .run(['$stateHelper', '$rootScope', 'loggerFactory', sgStateRun]);
 
     function listStatesIfDebug($state, DEBUG_MODE, $log, $timeout) {
         if (DEBUG_MODE) {
@@ -40,4 +43,5 @@ angular.module('sg.common.state', [
             })
         });
     }
-}());
+
+module.exports = app;

@@ -1,4 +1,6 @@
-angular.module('sg.app.popups.authentication').controller('LogoutPopupController', [
+require('./logout.popup.tpl.html');
+
+module.exports = [
     '$modalInstance',
     'securityService',
     'sgCallbacks',
@@ -18,4 +20,4 @@ angular.module('sg.app.popups.authentication').controller('LogoutPopupController
             $modalInstance.dismiss('cancel');
         }
     }
-]);
+];

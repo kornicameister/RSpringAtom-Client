@@ -1,10 +1,13 @@
-angular
-    .module('sg.app', [
-        'sg.app.view',
-        'sg.app.components',
-        'sg.app.popups',
-        'sg.app.vendor'
-    ])
+var angular = require('angular'),
+    deps = [
+        require('./view'), // 'sg.app.view',
+        require('./components'), // 'sg.app.components',
+        require('./popups'), // 'sg.app.popups',
+        require('./vendor') // 'sg.app.vendor'
+    ];
+
+module.exports = angular
+    .module('sg.app', deps)
     .value('$anchorScroll', angular.noop)
     .config(configureStickyState)
     .config(configureCompileProvider)

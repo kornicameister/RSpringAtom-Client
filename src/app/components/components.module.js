@@ -13,10 +13,12 @@
  *  for all components used strictly in view state to define
  *  entire visible part.
  */
-angular.module('sg.app.components', [
-    'sg.app.components.breadcrumb',
-    'sg.app.components.header',
-    'sg.app.components.footer',
-    'sg.app.components.navigation',
-    'sg.app.components.actionBar'
+var angular = require('angular');
+
+module.exports = angular.module('sg.app.components', [
+    require('./breadcrumb'),        // 'sg.app.components.breadcrumb',
+    require('./header'),            // 'sg.app.components.header',
+    require('./footer'),            // 'sg.app.components.footer',
+    require('./navigation'),        // 'sg.app.components.navigation',
+    require('./action-bar')         // 'sg.app.components.actionBar'
 ]);

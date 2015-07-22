@@ -1,3 +1,5 @@
+var angular = require('angular');
+
 angular.module('sg.app.view.dashboard', [
     'sg.app.view.dashboard.calendar',
     'sg.app.view.dashboard.cars',

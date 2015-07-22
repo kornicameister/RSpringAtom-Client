@@ -1,33 +1,24 @@
-module.exports = function (gulp) {
-    var express = require('express'),
-        refresh = require('gulp-livereload'),
-        liveReload = require('connect-livereload'),
-        gzipStatic = require('connect-gzip-static'),
-        liveReloadPort = 35729,
-        serverPort = 3000;
+module.exports = function (gulp, plugins, options, webpackConfig) {
+  var webpack = require("webpack"),
+      WebpackDevServer = require("webpack-dev-server"),
+      clone = require('lodash/lang/clone'),
+      serverConfig;
+
+    webpackConfig = clone(webpackConfig);
+    webpackConfig.devtool = 'eval';
+    webpackConfig.debug = !(options.env === 'prod');
+
+    serverConfig = clone(webpackConfig.devServer);
 
     return function () {
-        var distDir = require('../conf/paths').DIST_DIR,
-            app = express(),
-            server = require('http').createServer(app),
-            io = require('socket.io')(server);
+        var compiler = webpack(webpackConfig),
+            server = new WebpackDevServer(compiler);
 
-        app.use(liveReload({port: liveReloadPort}));
-        app.use(gzipStatic(distDir));
-        app.use(server.handleRequest);
-        app.use(require('morgan')('dev'));
-
-        // start up
-        app.listen(serverPort, function () {
-            console.log('Listening on server.port=' + serverPort);
+        server.listen(8080, "localhost", function(err) {
+          if(err) throw new gutil.PluginError("webpack-dev-server", err);
+          require('gutil').log("[server]", webpackConfig.output.path + '/index.html');
         });
-        refresh.listen(liveReloadPort, function () {
-            console.log('Listening on liveReload.port=' + liveReloadPort);
-        });
-        // start up
 
-        require('./watch')(gulp, refresh);
-
-        return app;
+        return server;
     }
 };

@@ -27,14 +27,6 @@
       "build"
    ],
    "overrides"      : {
-      "angular"          : {
-         "dev" : "angular.js",
-         "prod": "angular.min.js"
-      },
-      "angular-animate"  : {
-         "dev" : "angular-animate.js",
-         "prod": "angular-animate.min.js"
-      },
       "angular-bootstrap": {
          "dev" : "ui-bootstrap-tpls.js",
          "prod": "ui-bootstrap-tpls.min.js"
@@ -51,17 +43,13 @@
       }
    },
    "dependencies"   : {
-      "jsface"                       : ">=2.4.x",
       "lodash"                       : ">=3.10.x",
       "animate.css"                  : ">=3.2.x",
       "normalize-css"                : ">=3.0.x",
-      "angular"                      : ">=1.4.x",
       "angular-ui-router"            : ">=0.2.x",
       "angular-ui-grid"              : ">=3.0.x",
       "angular-ui-calendar"          : ">=1.0.x",
-      "angular-animate"              : ">=1.4.x",
       "angular-moment"               : ">=0.9.x",
-      "angular-cookies"              : ">=1.4.x",
       "angular-dialog-service"       : ">=5.2.x",
       "angular-translate"            : ">=2.6.x",
       "angular-translate-handler-log": ">=2.6.x",
@@ -77,8 +65,5 @@
    "devDependencies": {
       "angular-mocks"   : "latest",
       "angular-scenario": "latest"
-   },
-   "resolutions"    : {
-      "angular": "1.4.x"
    }
 }

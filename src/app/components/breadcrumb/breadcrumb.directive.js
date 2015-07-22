@@ -1,12 +1,9 @@
-(function (module) {
-    module.directive('sgBreadcrumb', ['ControllerBoundDirective', breadcrumbDirective]);
+module.exports = ['ControllerBoundDirective', breadcrumbDirective];
 
-    function breadcrumbDirective(ControllerBoundDirective) {
-        return new ControllerBoundDirective({
-            restrict   : 'E',
-            controller : 'BreadcrumbController',
-            templateUrl: 'app/components/breadcrumb/breadcrumb.tpl.html'
-        })
-    }
-
-}(angular.module('sg.app.components.breadcrumb')));
+function breadcrumbDirective(ControllerBoundDirective) {
+    return new ControllerBoundDirective({
+        restrict   : 'E',
+        controller : 'BreadcrumbController',
+        templateUrl: require('./breadcrumb.tpl.html')
+    })
+}

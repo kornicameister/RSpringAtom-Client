@@ -1,4 +1,6 @@
-_.mixin({
+var mixin = require('lodash/utility/mixin');
+
+mixin({
     'format': function format(str, args) {
         var newStr = str;
         _.forEach(args, function (val, key) {
@@ -7,4 +9,3 @@ _.mixin({
         return newStr;
     }
 });
-

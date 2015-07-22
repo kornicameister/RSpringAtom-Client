@@ -1,7 +1,7 @@
-angular.module('sg.app.components.actionBar').directive('actionBar', function () {
-    return {
-        restrict   : 'E',
-        transclude : true,
-        templateUrl: 'app/components/action-bar/action-bar.tpl.html'
-    }
-});
+module.exports = function () {
+  return {
+      restrict   : 'E',
+      transclude : true,
+      templateUrl: require('./action-bar.tpl.html')
+  }
+};
