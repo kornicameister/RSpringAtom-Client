@@ -1,9 +1,8 @@
-angular.module('sg.common', [
+moduleUnitTest('sg.common', [
+    'sg.common.log',
     'sg.common.callbacks',
     'sg.common.directive',
-    'sg.common.log',
     'sg.common.navigation',
-    'sg.common.resources',
     'sg.common.security',
     'sg.common.state',
     'sg.common.translations',

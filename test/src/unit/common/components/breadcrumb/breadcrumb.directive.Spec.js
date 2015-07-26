@@ -1,3 +1,5 @@
+var expect = chai.expect;
+
 describe('sgBreadcrumb directive', function () {
     var scope,
         element,
@@ -12,12 +14,12 @@ describe('sgBreadcrumb directive', function () {
 
         it('should heave sg-breadcrumb header defined', function () {
             var header = element.find('header');
-            expect(header.length).toEqual(1);
+            expect(header.length).to.equal(1);
         });
 
         it('should have no li elements', function () {
             var liEls = element.find('li');
-            expect(liEls.length).toEqual(0);
+            expect(liEls.length).to.equal(1);
         });
 
         afterEach(function () {
@@ -29,15 +31,15 @@ describe('sgBreadcrumb directive', function () {
     describe('crumbs provided', function () {
         var length = 10;
 
-        beforeEach(initWithCrumbs(mockCrumbs(length)));
+        beforeEach(initWithCrumbs(length));
 
         it('should have 10 li elements', function () {
             var liEls = $(element[0]).find('li');
-            expect(liEls.length).toEqual(length);
+            expect(liEls.length).to.equal(length + 1); // including home crumb
         });
         it('should have at least one active crumb', function () {
             var liEls = $(element[0]).find('li.active');
-            expect(liEls.length).toEqual(1);
+            expect(liEls.length).to.equal(1);
         });
 
         afterEach(function () {
@@ -63,13 +65,13 @@ describe('sgBreadcrumb directive', function () {
         });
     }
 
-    function initWithCrumbs(crumbs) {
-        crumbs = crumbs || [];
+    function initWithCrumbs(length) {
         return angular.mock.inject(function ($rootScope, $compile, $q, breadcrumbService) {
+            var crumbs = length && length > 0 ? mockCrumbs(length) : [];
             scope = $rootScope.$new();
             q = $q;
 
-            spyOn(breadcrumbService, 'getBreadcrumbs').and.callFake(function () {
+            sinon.stub(breadcrumbService, 'getBreadcrumbs', function () {
                 return q(function (resolve) {
                     resolve(crumbs);
                 })

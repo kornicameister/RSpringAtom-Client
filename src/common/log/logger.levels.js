@@ -21,7 +21,7 @@ angular
         if (_.isEmpty(logLevel)) {
             logLevel = 'info'
         } else {
-            logLevel = logLevel.logLevel.toLowerCase();
+            logLevel = logLevel.toLowerCase();
         }
 
         isOff = isLoggingOff();

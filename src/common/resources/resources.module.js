@@ -1,1 +1,0 @@
-angular.module('sg.common.resources', ['sg.common.data']);

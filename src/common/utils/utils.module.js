@@ -67,12 +67,12 @@
     function getLogLevel() {
         var url = window.location.href,
             params = urlParams(url),
-            isDebug = isDebug(url);
+            debug = isDebug(url);
 
         if (params['logLevel']) {
             return params.logLevel.toLowerCase()
         }
-        return isDebug ? 'debug' : 'info';
+        return debug ? 'debug' : 'info';
     }
 
     function urlParams(url) {

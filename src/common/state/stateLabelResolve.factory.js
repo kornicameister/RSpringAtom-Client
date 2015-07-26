@@ -28,7 +28,7 @@
         };
 
         function getFromUnresolved(state) {
-            var label = state.resolve.label || undefined;
+            var label = state && state.resolve ? state.resolve.label : undefined;
 
             if (_.isUndefined(label)) {
                 return undefined;

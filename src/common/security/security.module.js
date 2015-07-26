@@ -11,6 +11,5 @@
  * Supports serving security services for states, actions, hyperlinks etc.
  */
 angular.module('sg.common.security', [
-    'sg.common.state',
-    'sg.common.data'
+    'sg.common.state'
 ]);

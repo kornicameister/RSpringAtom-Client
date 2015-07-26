@@ -1,9 +1,13 @@
+var expect = chai.expect,
+    stub = sinon.stub,
+    spy = sinon.spy;
+
 describe('$stateLabelResolve', function () {
     var $stateLabelResolve,
         $state,
         labelService;
 
-    beforeEach(angular.mock.module('sg.state', function ($provide) {
+    beforeEach(angular.mock.module('sg.common.state', function ($provide) {
         labelService = {
             getLabel: function () {
             }
@@ -18,36 +22,30 @@ describe('$stateLabelResolve', function () {
     }));
 
     it('it should have factory defined', function () {
-        expect($stateLabelResolve).not.toBe(null);
-        expect($stateLabelResolve).toBeDefined();
+        expect($stateLabelResolve).to.be.ok;
     });
 
     describe('check public API', function () {
         it('should have resolveLabel function', function () {
             var resolveLabel = $stateLabelResolve.resolveLabel;
 
-            expect(resolveLabel).toBeDefined();
-            expect(angular.isFunction(resolveLabel)).toEqual(true);
+            expect(resolveLabel).to.not.be.undefined;
+            expect(resolveLabel).to.be.a('function');
         });
     });
 
-    // TODO: fix test, require to provide state transition in order to retrieve the state
-
     describe('check resolveLabel', function () {
         it('should return undefined for undefined state', function () {
-            expect($stateLabelResolve.resolveLabel(undefined)).not.toBeDefined();
+            expect($stateLabelResolve.resolveLabel(undefined)).to.be.undefined;
         });
         it('should return undefined for missing definition in state', function () {
-            var state = {};
-
-            expect($stateLabelResolve.resolveLabel(state)).not.toBeDefined();
+            expect($stateLabelResolve.resolveLabel({})).to.be.undefined;
         });
         it('should return undefined for valid definition but no explicitly defined label', function () {
             var state = {
                 name: ''
             };
-
-            expect($stateLabelResolve.resolveLabel(state)).not.toBeDefined();
+            expect($stateLabelResolve.resolveLabel(state)).to.be.undefined;
         });
         it('should return string for string defined label', function () {
             var label = 'Test',
@@ -58,8 +56,8 @@ describe('$stateLabelResolve', function () {
                     }
                 };
 
-            expect($stateLabelResolve.resolveLabel(state)).toBeDefined();
-            expect($stateLabelResolve.resolveLabel(state)).toEqual(label);
+            expect($stateLabelResolve.resolveLabel(state)).to.not.be.undefined;
+            expect($stateLabelResolve.resolveLabel(state)).to.equal(label);
         });
         it('should return label for ordinary defined function', function () {
             var label = 'Test',
@@ -73,57 +71,58 @@ describe('$stateLabelResolve', function () {
                     }
                 };
 
-            spyOn(state, 'label').and.callThrough();
+            spy(state.resolve, 'label');
 
             var actualLabel = $stateLabelResolve.resolveLabel(state);
 
-            expect(actualLabel).toBeDefined();
-            expect(actualLabel).toEqual(label);
+            expect(actualLabel).to.not.be.undefined;
+            expect(actualLabel).to.equal(label);
 
-            expect(state.resolve.label).toHaveBeenCalled();
-            expect(state.resolve.label.calls.count()).toEqual(1);
+            expect(state.resolve.label).to.have.been.calledOnce;
         });
         it('should return label for DI defined function', function () {
             var label = 'Test',
                 state = {
-                    name : '',
-                    label: function (labelService) {
-                        return labelService.getLabel();
+                    name   : '',
+                    resolve: {
+                        label: function (labelService) {
+                            return labelService.getLabel();
+                        }
                     }
                 };
 
-            spyOn(labelService, 'getLabel').and.callFake(function () {
+            stub(labelService, 'getLabel', function () {
                 return label;
             });
 
             var actualLabel = $stateLabelResolve.resolveLabel(state);
 
-            expect(actualLabel).toBeDefined();
-            expect(actualLabel).toEqual(label);
+            expect(actualLabel).to.not.be.undefined;
+            expect(actualLabel).to.equal(label);
 
-            expect(labelService.getLabel).toHaveBeenCalled();
-            expect(labelService.getLabel.calls.count()).toEqual(1);
+            expect(labelService.getLabel).to.have.been.calledOnce;
         });
         it('should return label for DI as ARRAY defined function', function () {
             var label = 'Test',
                 state = {
-                    name : '',
-                    label: ['labelService', function (a) {
-                        return a.getLabel();
-                    }]
+                    name   : '',
+                    resolve: {
+                        label: ['labelService', function (a) {
+                            return a.getLabel();
+                        }]
+                    }
                 };
 
-            spyOn(labelService, 'getLabel').and.callFake(function () {
+            stub(labelService, 'getLabel', function () {
                 return label;
             });
 
             var actualLabel = $stateLabelResolve.resolveLabel(state);
 
-            expect(actualLabel).toBeDefined();
-            expect(actualLabel).toEqual(label);
+            expect(actualLabel).not.to.be.undefined;
+            expect(actualLabel).to.equal(label);
 
-            expect(labelService.getLabel).toHaveBeenCalled();
-            expect(labelService.getLabel.calls.count()).toEqual(1);
+            expect(labelService.getLabel).to.have.been.calledOnce;
         });
     })
 });
