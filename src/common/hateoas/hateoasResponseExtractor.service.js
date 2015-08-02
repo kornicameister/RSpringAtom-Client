@@ -4,15 +4,23 @@ function extractor(hateoasConfig, loggerFactory) {
   var logger           = loggerFactory('hateoasResponseExtractor'),
       keysReplacements = configureKeyReplacement();
 
+  function HateoasResponseExtractionError(message) {
+    this.message = (message || "");
+  }
+
+  HateoasResponseExtractionError.prototype = new Error();
+
   return function responseExtractor(data, operation, route, url, response, deferred) {
     logger.log(_.format('Call {route} intercepted, applying hateoas rules', {
       route: route
     }));
 
     if (isEntityRequest(data)) {
+      logger.debug('Normalizing entity request');
       return normalizeEntity(data);
     }
-    return data;
+    logger.debug('Normalizing collection request');
+    return normalizeCollection(data);
   };
 
   function configureKeyReplacement() {
@@ -20,14 +28,14 @@ function extractor(hateoasConfig, loggerFactory) {
 
     keys[hateoasConfig.linksRel()] = 'links';
     keys[hateoasConfig.pageRel()] = 'page';
-    keys[hateoasConfig.embeddedRel()] = 'content';
+    keys[hateoasConfig.embeddedRel()] = 'data';
     keys[hateoasConfig.selfRel()] = 'self';
 
     return keys;
   }
 
   function isEntityRequest(data) {
-    return hateoasConfig.linksRel() in data;
+    return !(hateoasConfig.embeddedRel() in data);
   }
 
   function normalizeEntity(data) {
@@ -46,8 +54,35 @@ function extractor(hateoasConfig, loggerFactory) {
     return newData;
   }
 
-  function normalizeCollection() {
+  function normalizeCollection(data) {
+    var embeddedItems = pickUpNestedEmbedded(data[hateoasConfig.embeddedRel()]),
+        items         = [],
+        respone       = {};
+    _.forEachRight(embeddedItems, function dataItemIterator(item) {
+      items.push(normalizeEntity(item));
+    });
 
+    respone[keysReplacements[hateoasConfig.embeddedRel()]] = items;
+    respone[keysReplacements[hateoasConfig.pageRel()]] = data[hateoasConfig.pageRel()];
+    respone[keysReplacements[hateoasConfig.linksRel()]] = data[hateoasConfig.linksRel()];
+
+    return respone;
+  }
+
+  function pickUpNestedEmbedded(embedded) {
+    var keys = _.keys(embedded);
+    if (keys.length > 1) {
+      throw new HateoasResponseExtractionError(
+        _.format('Expected single key under {e} but located following keys: {k}', {
+          e: hateoasConfig.embeddedRel(),
+          k: keys.toString()
+        })
+      )
+    } else if (keys.length == 0) {
+      logger.debug('Empty embedded response');
+      return [];
+    }
+    return embedded[keys[0]];
   }
 
   function getIdFromUrl(url) {
@@ -58,4 +93,5 @@ function extractor(hateoasConfig, loggerFactory) {
     }
     return last;
   }
+
 }

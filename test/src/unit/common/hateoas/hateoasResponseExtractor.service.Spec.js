@@ -112,6 +112,70 @@ describe('sg.common.hateoas - hateoasResponseExtractor', function () {
           "totalPages"   : 1,
           "number"       : 0
         }
+      },
+      collectionData     = {
+        "links": {
+          "self"  : {
+            "href"     : "http://localhost:8080/data/user{?page,size,sort}",
+            "templated": true
+          },
+          "search": {
+            "href": "http://localhost:8080/data/user/search"
+          }
+        },
+        "page" : {
+          "size"         : 50,
+          "totalElements": 2,
+          "totalPages"   : 1,
+          "number"       : 0
+        },
+        data   : [{
+          id                     : 1,
+          "createdDate"          : "2015-07-28T20:04:04.149Z",
+          "lastModifiedDate"     : "2015-07-28T20:04:04.149Z",
+          "version"              : 0,
+          "enabled"              : true,
+          "accountNonExpired"    : true,
+          "accountNonLocked"     : true,
+          "credentialsNonExpired": true,
+          "username"             : "SYSTEM",
+          "password"             : "$2a$10$g.1zOxQ9BiCQCwkIhicntuWAwL8qOqPIaNMgFuIATHp59XahhMKxK",
+          "email"                : "system@springatom.com",
+          "links"                : {
+            "self"          : {
+              "href": "http://localhost:8080/data/user/1"
+            },
+            "createdBy"     : {
+              "href": "http://localhost:8080/data/user/1/createdBy"
+            },
+            "lastModifiedBy": {
+              "href": "http://localhost:8080/data/user/1/lastModifiedBy"
+            }
+          }
+        }, {
+          id                     : 2,
+          "createdDate"          : "2015-07-28T20:04:04.357Z",
+          "lastModifiedDate"     : "2015-07-28T20:04:04.357Z",
+          "version"              : 0,
+          "enabled"              : true,
+          "accountNonExpired"    : true,
+          "accountNonLocked"     : true,
+          "credentialsNonExpired": true,
+          "username"             : "kornicameister",
+          "password"             : "$2a$10$Lk30.498/gwSaFxlJGWYc.FpBwpaTyPG5jD6oPh3Ko0Q9Glhjj.pC",
+          "email"                : "kornicameister@gmail.com",
+          "links"                : {
+            "self"          : {
+              "href": "http://localhost:8080/data/user/2"
+            },
+            "createdBy"     : {
+              "href": "http://localhost:8080/data/user/2/createdBy"
+            },
+            "lastModifiedBy": {
+              "href": "http://localhost:8080/data/user/2/lastModifiedBy"
+            }
+          }
+        }]
       };
 
   context('check', function () {
@@ -130,54 +194,84 @@ describe('sg.common.hateoas - hateoasResponseExtractor', function () {
   });
 
   context('logic', function () {
-    var $httpBackend,
-        Restangular;
-
     beforeEach(setUpCheck);
-    afterEach(tearDownCheck);
 
-    it('should normalize entity requst', function () {
-      $httpBackend
-        .when('GET', '/user/1')
-        .respond(entityResponse, {
-          Accept: 'application/json'
+    it('should normalize entity request', function () {
+      (function verify(data) {
+        var expectedValue,
+            value,
+            expectedKeys = _.keys(entityData);
+
+        expect(data).to.contain.all.keys(expectedKeys);
+
+        expectedKeys.forEach(function (key) {
+          expectedValue = entityData[key];
+          value = data[key];
+          expect(value).to.deep.equal(expectedValue);
         });
 
-      $httpBackend.expectGET('/user/1');
-      Restangular
-        .one('user', 1)
-        .get()
-        .then(function (data) {
-
-          _.keys(entityData).forEach(function (key) {
-            // TODO checkup aint working
-            expect(data).to.have.property(key, 'Data does not have property ' + key);
-          });
-
-        })
-        .then(function () {
-          expect(extractor.extractor).to.have.been.calledOnce;
-        });
-      $httpBackend.flush();
+      }(extractor(entityResponse, 'GET', '/a/route')));
     });
 
-    function tearDownCheck() {
-      $httpBackend.verifyNoOutstandingExpectation();
-      $httpBackend.verifyNoOutstandingRequest();
-    }
+    it('should normalize collection request', function () {
+      (function verify(data) {
+        var expectedValue,
+            value,
+            expectedKeys = _.keys(collectionData);
+
+        expect(data).to.contain.all.keys(expectedKeys);
+
+        expectedKeys.forEach(function (key) {
+          expectedValue = collectionData[key];
+          value = data[key];
+          if (value instanceof Array) {
+            expect(value).to.not.be.empty;
+            value.forEach(function expectedArrayIt(item) {
+              expect(item).to.contain.key('id');
+
+              var index  = _.findIndex(collectionData['data'], function (it) {
+                    return it.id === item.id;
+                  }),
+                  cdItem = collectionData['data'][index];
+
+              expect(item).to.deep.equal(cdItem);
+
+            })
+          } else {
+            expect(value).to.deep.equal(expectedValue);
+          }
+        });
+
+      }(extractor(collectionResponse, 'GET', '/a/route')))
+    });
+
+    it('should throw HateoasResponseExtractionError for more then one embedded item', function () {
+      expect((function () {
+        extractor({
+          _links   : {},
+          _embedded: {
+            a: [],
+            b: []
+          },
+          page     : {}
+        })
+      })).to.throw(/Expected single key under/);
+    });
+
+    it('should return empty data array if empty _embedded', function () {
+      (function verify(data) {
+        expect(data['data']).to.be.empty;
+      }(extractor({
+        _links   : {},
+        _embedded: {},
+        page     : {}
+      })))
+    });
 
     function setUpCheck() {
       module('sg.common.hateoas');
-
-      inject(function (_hateoasResponseExtractor_, _Restangular_, $injector) {
-        extractor = {
-          extractor: _hateoasResponseExtractor_
-        };
-        Restangular = _Restangular_;
-        $httpBackend = $injector.get('$httpBackend');
-
-        sinon.spy(extractor, 'extractor');
-        Restangular.setResponseExtractor(extractor.extractor);
+      inject(function (_hateoasResponseExtractor_) {
+        extractor = _hateoasResponseExtractor_;
       });
     }
 
